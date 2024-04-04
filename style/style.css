@@ -1,0 +1,43 @@
+body{
+    color: white;
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size:large;
+}
+.country-info{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.date-info{
+    display: flex;
+    justify-content: center;
+
+}
+.cards-info{
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+.card{
+    background-color:white;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 300px;
+    margin: 28px;
+    color: #000;
+}
+.search-info{
+    display: flex;
+    justify-content: center;
+}
+.select{
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-right: 10px;
+}
