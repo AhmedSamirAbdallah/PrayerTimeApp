@@ -9,9 +9,6 @@ function getAccessToken() {
         })
             .then((response) => {
                 resolve(response)
-                // session["auth_token"] = response.data.auth_token
-                // return response.data.auth_token
-
             })
             .catch((error) => {
                 reject();
@@ -41,7 +38,6 @@ function createOptionsOfCountry(countryName,countryId) {
     countrySelect.appendChild(option)
     let country = document.createTextNode(countryName)
     option.appendChild(country)
-
 }
 
 function getCountries(authToken) {
@@ -96,7 +92,7 @@ function getStates(ctx) {
                 for ( let state in states) {
                     createOptionsOfCity(states[state].state_name)
                 }
-                resolve()
+                resolve(ctx)
             })
             .catch((error) => {
                 console.log(error)
@@ -107,13 +103,42 @@ function getStates(ctx) {
 
 }
 
-
+function getPrayerTime(country, city){
+    let objDate = new Date()
+    let year = objDate.getFullYear()
+    let month = objDate.getMonth()+1
+    let url = ` http://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
+    axios.get(url)
+    .then((resposne)=>{
+        console.log(resposne)
+    }).catch((error)=>{
+        alert(error)
+    })
+}
 
 getAccessToken().then((response) => {
-    const authToken = response.data.auth_token
-    return getCountries(authToken)
+    return getCountries(response.data.auth_token)
 }).then((response) => {
     return onChangeCountry(response)
 }).then((response)=>{
     return getStates(response)
+}).then((response)=>{
+    let countrySelect = document.getElementById("country-select")
+    let country = ""
+    countrySelect.addEventListener('change',(event)=>{
+        console.log(event.target.value)
+        document.getElementById("city-select").innerHTML=""
+        response.country = event.target.value
+        country = response.country
+        getStates(response).then((response)=>{
+            document.getElementById("city-select").addEventListener('change',(event)=>{
+                console.log(event.target.value)
+                getPrayerTime(country,event.target.value)
+            })
+        })
+    })
+    document.getElementById("city-select").addEventListener('change',(event)=>{
+        console.log(event.target.value)
+        getPrayerTime(response.country,event.target.value)
+    })
 })
