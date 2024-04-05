@@ -1,7 +1,3 @@
-session = {}
-function clearSession() {
-    session = {}
-}
 function getAccessToken() {
     return new Promise((resolve, reject) => {
         axios.get('https://www.universal-tutorial.com/api/getaccesstoken', {
@@ -24,9 +20,10 @@ function getAccessToken() {
     })
 
 }
-// setInterval(clearSession,180000);
 
-
+function onChangeCountry(){
+    let country = document.getElementById()
+}
 
 function createOptionsOfCountry(countryName) {
     let countrySelect = document.getElementById("country-select")
@@ -35,14 +32,6 @@ function createOptionsOfCountry(countryName) {
     let country = document.createTextNode(countryName)
     option.appendChild(country)
 
-}
-function getSortedNames(countries) {
-    sortedCounties = new Array()
-    for (let key in countries) {
-        sortedCounties.push(countries[key].name)
-    }
-    sortedCounties.sort()
-    return sortedCounties
 }
 
 function getCountries(authToken) {
