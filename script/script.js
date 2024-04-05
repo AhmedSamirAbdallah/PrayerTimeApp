@@ -18,23 +18,23 @@ function getAccessToken() {
 
 }
 
-function onChangeCountry(response){
-    return new Promise((resolve, reject)=>{
+function onChangeCountry(response) {
+    return new Promise((resolve, reject) => {
         let country = document.getElementById("country-select")
-        country.addEventListener('change',(event)=>{
+        country.addEventListener('change', (event) => {
             let ctx = {
-                "authToken":response,
-                "country":event.target.value
+                "authToken": response,
+                "country": event.target.value
             }
             resolve(ctx)
         })
     })
 }
 
-function createOptionsOfCountry(countryName,countryId) {
+function createOptionsOfCountry(countryName, countryId) {
     let countrySelect = document.getElementById("country-select")
     let option = document.createElement("option")
-    option.id=countryId
+    option.id = countryId
     countrySelect.appendChild(option)
     let country = document.createTextNode(countryName)
     option.appendChild(country)
@@ -53,7 +53,7 @@ function getCountries(authToken) {
             .then((response) => {
                 let countries = response.data
                 for (let country in countries) {
-                    createOptionsOfCountry(countries[country].country_name,countries[country].country_short_name.toLowerCase())
+                    createOptionsOfCountry(countries[country].country_name, countries[country].country_short_name.toLowerCase())
                 }
                 resolve(authToken)
             })
@@ -78,7 +78,7 @@ function createOptionsOfCity(cityName) {
 
 
 function getStates(ctx) {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         let url = `https://www.universal-tutorial.com/api/states/${ctx.country}`
         let token = `Bearer ${ctx.authToken}`
         axios.get(url, {
@@ -89,7 +89,7 @@ function getStates(ctx) {
         })
             .then((response) => {
                 let states = response.data
-                for ( let state in states) {
+                for (let state in states) {
                     createOptionsOfCity(states[state].state_name)
                 }
                 resolve(ctx)
@@ -97,48 +97,48 @@ function getStates(ctx) {
             .catch((error) => {
                 console.log(error)
             })
-    }).catch((error)=>{
+    }).catch((error) => {
         alert(error)
     })
 
 }
 
-function getPrayerTime(country, city){
+function getPrayerTime(country, city) {
     let objDate = new Date()
     let year = objDate.getFullYear()
-    let month = objDate.getMonth()+1
+    let month = objDate.getMonth() + 1
     let url = ` http://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
     axios.get(url)
-    .then((resposne)=>{
-        console.log(resposne)
-    }).catch((error)=>{
-        alert(error)
-    })
+        .then((resposne) => {
+            console.log(resposne)
+        }).catch((error) => {
+            alert(error)
+        })
 }
 
 getAccessToken().then((response) => {
     return getCountries(response.data.auth_token)
 }).then((response) => {
     return onChangeCountry(response)
-}).then((response)=>{
+}).then((response) => {
     return getStates(response)
-}).then((response)=>{
+}).then((response) => {
     let countrySelect = document.getElementById("country-select")
     let country = ""
-    countrySelect.addEventListener('change',(event)=>{
+    countrySelect.addEventListener('change', (event) => {
         console.log(event.target.value)
-        document.getElementById("city-select").innerHTML=""
+        document.getElementById("city-select").innerHTML = ""
         response.country = event.target.value
         country = response.country
-        getStates(response).then((response)=>{
-            document.getElementById("city-select").addEventListener('change',(event)=>{
+        getStates(response).then((response) => {
+            document.getElementById("city-select").addEventListener('change', (event) => {
                 console.log(event.target.value)
-                getPrayerTime(country,event.target.value)
+                getPrayerTime(country, event.target.value)
             })
         })
     })
-    document.getElementById("city-select").addEventListener('change',(event)=>{
+    document.getElementById("city-select").addEventListener('change', (event) => {
         console.log(event.target.value)
-        getPrayerTime(response.country,event.target.value)
+        getPrayerTime(response.country, event.target.value)
     })
 })
