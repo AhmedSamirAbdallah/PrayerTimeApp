@@ -110,15 +110,35 @@ function getStates(ctx) {
         }
     })
 }
+function showTimings(response){
+    let dateInfo = document.getElementById("date-info")
+    console.log(response)
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("fajr-card").innerHTML = `<h2>Fajr</h2><h3>${response.timings.Fajr}</h3>`
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("sunrise-card").innerHTML = `<h2>Sunrise</h2><h3>${response.timings.Sunrise}</h3>`
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("zhuhr-card").innerHTML = `<h2>Fajr</h2><h3>${response.timings.Dhuhr}</h3>`
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("asr-card").innerHTML = `<h2>Fajr</h2><h3>${response.timings.Asr}</h3>`
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("maghrib-card").innerHTML = `<h2>Fajr</h2><h3>${response.timings.Maghrib}</h3>`
+    dateInfo.innerHTML=`<h3>${response.date.readable}</h3>`
+    document.getElementById("isha-card").innerHTML = `<h2>Fajr</h2><h3>${response.timings.Isha}</h3>`
+
+}
 
 function getPrayerTime(country, city) {
     let objDate = new Date()
     let year = objDate.getFullYear()
     let month = objDate.getMonth() + 1
+    let day = objDate.getDay()-1
     let url = ` http://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
-            console.log(resposne.data.data)
+            // console.log(resposne.data.data[day])
+            showTimings(resposne.data.data[day])
+
         }).catch((error) => {
             alert(error)
         })
