@@ -1,3 +1,5 @@
+let cache = {}
+
 function getAccessToken() {
     return new Promise((resolve, reject) => {
         axios.get('https://www.universal-tutorial.com/api/getaccesstoken', {
@@ -12,7 +14,7 @@ function getAccessToken() {
             })
             .catch((error) => {
                 reject();
-                console.log(error)
+                alert(error)
             })
     })
 
@@ -31,76 +33,82 @@ function onChangeCountry(response) {
     })
 }
 
-function createOptionsOfCountry(countryName, countryId) {
+function createOptionsOfCountries(countries) {
     let countrySelect = document.getElementById("country-select")
-    let option = document.createElement("option")
-    option.id = countryId
-    countrySelect.appendChild(option)
-    let country = document.createTextNode(countryName)
-    option.appendChild(country)
+    countrySelect.innerHTML = ""
+    for (let country in countries) {
+        let option = document.createElement("option")
+        countrySelect.appendChild(option)
+        option.textContent = (countries[country].country_name)
+    }
 }
 
 function getCountries(authToken) {
     return new Promise((resolve, reject) => {
         let url = "https://www.universal-tutorial.com/api/countries/"
         let token = `Bearer ${authToken}`
-        axios.get(url, {
-            headers: {
-                "Authorization": token,
-                "Accept": "application/json"
-            }
-        })
-            .then((response) => {
-                let countries = response.data
-                for (let country in countries) {
-                    createOptionsOfCountry(countries[country].country_name, countries[country].country_short_name.toLowerCase())
+
+        if (cache.countries) {
+            console.log("Cached the Countries")
+            createOptionsOfCountries(cache.countries)
+            resolve(authToken)
+        }
+        else {
+            axios.get(url, {
+                headers: {
+                    "Authorization": token,
+                    "Accept": "application/json"
                 }
-                resolve(authToken)
             })
-            .catch((error) => {
-                console.log(error)
-            })
-    }).catch((error) => {
-        alert(error)
+                .then((response) => {
+                    cache.countries = response.data
+                    createOptionsOfCountries(response.data)
+                    resolve(authToken)
+                })
+                .catch((error) => {
+                    alert(error)
+                    reject(error)
+                })
+        }
     })
-
 }
 
-function createOptionsOfCity(cityName) {
-    let countrySelect = document.getElementById("city-select")
-    let option = document.createElement("option")
-    option.id = cityName.toLowerCase()
-    countrySelect.appendChild(option)
-    let city = document.createTextNode(cityName)
-    option.appendChild(city)
-
+function createOptionsOfCities(states) {
+    let citySelect = document.getElementById("city-select")
+    citySelect.innerHTML = ""
+    for (let state in states) {
+        let option = document.createElement("option")
+        citySelect.appendChild(option)
+        option.textContent = states[state].state_name
+    }
 }
-
 
 function getStates(ctx) {
     return new Promise((resolve, reject) => {
         let url = `https://www.universal-tutorial.com/api/states/${ctx.country}`
         let token = `Bearer ${ctx.authToken}`
-        axios.get(url, {
-            headers: {
-                "Authorization": token,
-                "Accept": "application/json"
-            }
-        })
-            .then((response) => {
-                let states = response.data
-                for (let state in states) {
-                    createOptionsOfCity(states[state].state_name)
+        if (cache[ctx.country]) {
+            console.log("Cached cities")
+            createOptionsOfCities(cache[ctx.country])
+            resolve(ctx)
+        }
+        else {
+            axios.get(url, {
+                headers: {
+                    "Authorization": token,
+                    "Accept": "application/json"
                 }
-                resolve(ctx)
             })
-            .catch((error) => {
-                console.log(error)
-            })
-    }).catch((error) => {
-        alert(error)
+                .then((response) => {
+                    createOptionsOfCities(response.data)
+                    resolve(ctx)
+                })
+                .catch((error) => {
+                    alert(error)
+                    reject(error)
+                })
+        }
     })
-
 }
 
 function getPrayerTime(country, city) {
@@ -110,35 +118,24 @@ function getPrayerTime(country, city) {
     let url = ` http://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
-            console.log(resposne)
+            console.log(resposne.data.data)
         }).catch((error) => {
             alert(error)
         })
 }
 
-getAccessToken().then((response) => {
-    return getCountries(response.data.auth_token)
-}).then((response) => {
-    return onChangeCountry(response)
-}).then((response) => {
-    return getStates(response)
-}).then((response) => {
-    let countrySelect = document.getElementById("country-select")
-    let country = ""
-    countrySelect.addEventListener('change', (event) => {
-        console.log(event.target.value)
-        document.getElementById("city-select").innerHTML = ""
-        response.country = event.target.value
-        country = response.country
-        getStates(response).then((response) => {
-            document.getElementById("city-select").addEventListener('change', (event) => {
-                console.log(event.target.value)
-                getPrayerTime(country, event.target.value)
-            })
-        })
-    })
-    document.getElementById("city-select").addEventListener('change', (event) => {
-        console.log(event.target.value)
-        getPrayerTime(response.country, event.target.value)
-    })
+let country = ""
+getAccessToken()
+    .then((response) => getCountries(response.data.auth_token))
+    .then((response) => onChangeCountry(response))
+    .then((response) => getStates(response))
+    .then((response) => {
+        document.getElementById("country-select").addEventListener('change', (event) => {
+            document.getElementById("city-select").innerHTML = "";
+            response.country = event.target.value 
+            country=event.target.value
+            getStates(response)})
+    })       
+document.getElementById("city-select").addEventListener('change', (event) => {
+    getPrayerTime(country, event.target.value)
 })
