@@ -36,7 +36,7 @@ function onChangeCountry(response) {
 
 function createOptionsOfCountries(countries) {
     let countrySelect = document.getElementById("country-select")
-    countrySelect.innerHTML = ""
+    countrySelect.innerHTML = "<option selected disabled>Select Country</option>"
     for (let country in countries) {
         let option = document.createElement("option")
         countrySelect.appendChild(option)
@@ -76,7 +76,8 @@ function getCountries(authToken) {
 
 function createOptionsOfCities(states) {
     let citySelect = document.getElementById("city-select")
-    citySelect.innerHTML = ""
+    citySelect.innerHTML = "<option selected disabled>Select City</option>"
+
     for (let state in states) {
         let option = document.createElement("option")
         citySelect.appendChild(option)
