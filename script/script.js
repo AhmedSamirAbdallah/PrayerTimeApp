@@ -137,7 +137,7 @@ function getPrayerTime(country, city) {
     let year = objDate.getFullYear()
     let month = objDate.getMonth() + 1
     let day = objDate.getDay() - 1
-    let url = ` http://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
+    let url = `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
             ToggleshowTimings(resposne.data.data[day], "show")
