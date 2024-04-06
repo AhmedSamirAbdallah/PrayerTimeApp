@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrayerTime</title>
     <link href="style/style.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 </head>
 
 <body>
@@ -20,13 +18,11 @@
             <div id="country-search" class="country-search">
                 <label>Country</label>
                 <select name="Country" id="country-select" class="select">
-                    <option value="" selected>Select Country</option> <!-- Empty default option -->
                 </select>
             </div>
             <div id="city-search" class="city-search">
                 <label>City</label>
                 <select name="City" id="city-select" class="select">
-                    <option value="" selected>Select City</option> <!-- Empty default option -->
                 </select>
             </div>
         </div>
@@ -46,6 +42,7 @@
         </div>
     </div>
 </body>
+<script src="./node_modules/axios/dist/axios.min.js"></script>
 <script src="script/script.js"></script>
 
 </html>
