@@ -106,13 +106,13 @@ function getStates(ctx) {
                     resolve(ctx)
                 })
                 .catch((error) => {
-                    alert(error)
                     reject(error)
+                    alert(error)
                 })
         }
     })
 }
-function ToggleshowTimings(response = {}, behaviour) {
+function toggleshowTimings(response = {}, behaviour) {
     const prayers = [
         { id: "fajr-card", name: "Fajr" },
         { id: "sunrise-card", name: "Sunrise" },
@@ -133,14 +133,11 @@ function ToggleshowTimings(response = {}, behaviour) {
 }
 
 function getPrayerTime(country, city) {
-    let objDate = new Date()
-    let year = objDate.getFullYear()
-    let month = objDate.getMonth() + 1
-    let day = objDate.getDay() - 1
-    let url = `https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=${country}`
+    let url = `http://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
-            ToggleshowTimings(resposne.data.data[day], "show")
+            console.log(resposne)
+            toggleshowTimings(resposne.data.data, "show")
         }).catch((error) => {
             alert(error)
         })
@@ -155,7 +152,7 @@ getAccessToken()
         document.getElementById("country-select").addEventListener('change', (event) => {
             document.getElementById("country-info").innerHTML = ""
             document.getElementById("city-select").innerHTML = "";
-            ToggleshowTimings("hide")
+            toggleshowTimings("hide")
             response.country = event.target.value
             getStates(response)
         })
