@@ -133,7 +133,7 @@ function toggleshowTimings(response = {}, behaviour) {
 }
 
 function getPrayerTime(country, city) {
-    let url = `http://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}`
+    let url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
             // console.log(resposne.data.data.timings)
