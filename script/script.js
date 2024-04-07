@@ -124,7 +124,7 @@ function toggleshowTimings(response = {}, behaviour) {
     prayers.forEach(prayer => {
         if (behaviour == "show") {
             document.getElementById(prayer.id).removeAttribute("hidden");
-            document.getElementById(prayer.id).innerHTML = `<h2>${prayer.name}</h2><h3>${response.timings[prayer.name]}</h3>`
+            document.getElementById(prayer.id).innerHTML = `<h2>${prayer.name}</h2><h3>${response[prayer.name]}</h3>`
         }
         else {
             document.getElementById(prayer.id).setAttribute("hidden", true);
@@ -136,8 +136,8 @@ function getPrayerTime(country, city) {
     let url = `http://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}`
     axios.get(url)
         .then((resposne) => {
-            console.log(resposne)
-            toggleshowTimings(resposne.data.data, "show")
+            // console.log(resposne.data.data.timings)
+            toggleshowTimings(resposne.data.data.timings, "show")
         }).catch((error) => {
             alert(error)
         })
